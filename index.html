@@ -21,9 +21,9 @@
 </head>
 <body>
   <h1>Internet Search</h1>
-  <div class="subtitle">审计底稿一键搜索工具（支持多搜索引擎）</div>
+  <div class="subtitle">审计一键搜索工具（支持多搜索引擎）</div>
 
-  <p>每行一个关键词（公司名、身份证号、银行卡等），回车换行：</p>
+  <p>每行一个关键词（公司，法人，董监高等），回车换行：</p>
   <textarea id="keywords" placeholder="马斯克
 马云
 马化腾"></textarea>
@@ -36,12 +36,12 @@
     <label><input type="checkbox"> Yahoo Search</label>
   </div>
 
-  <button onclick="send()">开始搜索并生成 PDF 底稿</button>
+  <button onclick="send()">开始搜索并生成 PDF</button>
   <div id="msg">等待操作…</div>
 
   <!-- 下载区域 -->
   <div id="download-area">
-    <strong>搜索完成！您的审计底稿已生成：</strong><br><br>
+    <strong>搜索完成！您的搜索PDF已生成：</strong><br><br>
     <a id="download-link" href="#" download>点击下载结果包（ZIP）</a>
   </div>
 
