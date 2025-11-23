@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Internet Search 审计工具</title>
+  <style>
+    body {font-family: Arial, sans-serif; padding: 40px; background: #f8f9fc; color: #333; max-width: 900px; margin: 0 auto;}
+    h1 {font-size: 28px; color: #2c3e50; margin-bottom: 10px;}
+    .subtitle {font-size: 16px; color: #7f8c8d; margin-bottom: 30px;}
+    textarea {width: 100%; height: 180px; font-size: 16px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px;}
+    .engines {margin: 25px 0;}
+    .engines label {font-size: 16px; margin-right: 25px; cursor: pointer;}
+    button {padding: 14px 32px; font-size: 18px; background: #635bff; color: white; border: none; border-radius: 6px; cursor: pointer;}
+    button:hover {background: #5148d8;}
+    #msg {margin-top: 25px; padding: 15px; border-radius: 6px; min-height: 50px;}
+    .success {background: #d4edda; color: #155724; border: 1px solid #c3e6cb;}
+    .error {background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;}
+    #download-area {margin-top: 40px; padding: 20px; background: #eef2ff; border-radius: 8px; display: none;}
+    #download-area a {color: #635bff; font-weight: bold; font-size: 18px;}
+  </style>
+</head>
+<body>
+  <h1>Internet Search</h1>
+  <div class="subtitle">审计底稿一键搜索工具（支持多搜索引擎）</div>
+
+  <p>每行一个关键词（公司名、身份证号、银行卡等），回车换行：</p>
+  <textarea id="keywords" placeholder="马斯克
+马云
+马化腾"></textarea>
+
+  <div class="engines">
+    <strong>选择搜索引擎：</strong><br><br>
+    <label><input type="checkbox" checked> Google Search</label>
+    <label><input type="checkbox"> Baidu Search</label>
+    <label><input type="checkbox"> Bing Search</label>
+    <label><input type="checkbox"> Yahoo Search</label>
+  </div>
+
+  <button onclick="send()">开始搜索并生成 PDF 底稿</button>
+  <div id="msg">等待操作…</div>
+
+  <!-- 下载区域 -->
+  <div id="download-area">
+    <strong>搜索完成！您的审计底稿已生成：</strong><br><br>
+    <a id="download-link" href="#" download>点击下载结果包（ZIP）</a>
+  </div>
+
+  <script>
+    function send() {
+      const text = document.getElementById('keywords').value.trim();
+      if (!text) return alert('请先输入关键词');
+
+      // 读取用户勾选的引擎（以后 Make 里直接用）
+      const engines = [];
+      document.querySelectorAll('.engines input[type="checkbox"]:checked').forEach(cb => {
+        engines.push(cb.parentElement.textContent.trim());
+      });
+
+      document.getElementById('msg').innerHTML = '正在推送任务，请稍等 15-30 秒…';
+      document.getElementById('msg').className = '';
+      document.getElementById('download-area').style.display = 'none';
+
+      fetch('https://hook.eu1.make.com/wtj29n1qy83kc9mku608jq5lokkgdkdo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text: text,
+          engines: engines.join(',')  // 以后 Make 可以直接读这个字段
+        })
+      })
+      .then(r => r.text())
+      .then(res => {
+        document.getElementById('msg').innerHTML = '任务已提交！正在后台生成 PDF（稍后刷新下载区）';
+        document.getElementById('msg').className = 'success';
+        // 等 Make 完成后会返回下载链接（后面再加）
+        document.getElementById('download-area').style.display = 'block';
+      })
+      .catch(err => {
+        document.getElementById('msg').innerHTML = '推送失败：' + err;
+        document.getElementById('msg').className = 'error';
+      });
+    }
+  </script>
+</body>
+</html>
