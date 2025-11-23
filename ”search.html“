@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>审计搜索神器</title>
+  <style>
+    body { font-family: Arial; padding: 30px; background: #f4f7f9; }
+    textarea { width: 100%; height: 200px; font-size: 16px; }
+    button { padding: 15px 30px; font-size: 18px; background: #635bff; color: white; border: none; cursor: pointer; margin-top: 20px; }
+    #msg { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>审计负面信息一键搜</h1>
+  <p>每行一个关键词（比如公司名、人名），回车换行：</p>
+  <textarea id="keywords" placeholder="马斯克
+马云
+马化腾"></textarea><br>
+  <button onclick="send()">立刻搜索并生成 PDF 底稿</button>
+  <div id="msg"></div>
+
+  <script>
+    function send() {
+      const text = document.getElementById('keywords').value.trim();
+      if (!text) return alert('请先输入关键词');
+
+      document.getElementById('msg').innerHTML = '正在推送，请稍等 10-20 秒…';
+
+      fetch('https://wtj29n1qy83kc9mku608jq5lokkgdkdo@hook.eu1.make.com', {  // ← 直接粘你的 webhook URL
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text })
+      })
+      .then(r => r.text())
+      .then(res => {
+        document.getElementById('msg').innerHTML = '推送成功！<br>去 Make 场景看吧，马上会出 PDF 底稿～';
+      })
+      .catch(err => {
+        document.getElementById('msg').innerHTML = '推送失败：' + err;
+      });
+    }
+  </script>
+</body>
+</html>
